@@ -144,7 +144,7 @@ def remove_deprecated_params(text,dry_run):
                 link = str(template.get("link").value)
                 code.replace(template,"[[File:" + img + "|link=" + link + "]]")
                 content_changed = True
-            else if template.has("image"):
+            elif template.has("image"):
                 img = str(template.get("image").value)
                 code.replace(template,"[[File:" + img + "]]")
                 content_changed = True
