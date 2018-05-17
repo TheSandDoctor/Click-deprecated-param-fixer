@@ -6,7 +6,7 @@ import json
 def call_home(site):
     page = site.Pages['User:DeprecatedFixerBot/status']
     text = page.text()
-    data = json.loads(text)["run"]["click"]
+    data = json.loads(text)["run"]["click_convert"]
     if str(data) == str(True):
         return True
     return False
@@ -138,18 +138,16 @@ def remove_deprecated_params(text,dry_run):
     code = mwparserfromhell.parse(text)
     for template in code.filter_templates():
         if (template.name.matches("click") or template.name.matches("click-fixed")):
-            if template.has("width"):
-                template.remove("width",False)
+            img = link = None
+            if template.has("image") and template.has("link"):
+                img = str(template.get("image").value)
+                link = str(template.get("link").value)
+                code.replace(template,"[[File:" + img + "|link=" + link + "]]")
                 content_changed = True
-                print("Removed width")
-            if template.has("height"):
-                template.remove("height",False)
+            else if template.has("image"):
+                img = str(template.get("image").value)
+                code.replace(template,"[[File:" + img + "]]")
                 content_changed = True
-                print("Removed height")
-            if template.has("desc"):
-                template.remove("desc",False)
-                content_changed = True
-                print("Removed desc")
     return [content_changed, str(code)] # get back text to save
 
 def main():
